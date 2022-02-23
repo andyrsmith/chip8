@@ -1,0 +1,14 @@
+{
+  "name": "chip8js-cli",
+  "version": "1.0.0",
+  "description": "Chip8 Emulator written in Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andy Smith",
+  "license": "ISC",
+  "dependencies": {
+    "blessed": "^0.1.81"
+  }
+}
