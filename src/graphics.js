@@ -17,13 +17,13 @@ class CliGraphics {
         this.screen.title = "Chip 8 Emulator"
     }
 
-    drawPixel(x, y) {
+    drawPixel(x, y, n) {
         this.blessed.box({
             parent: this.screen,
             top: y,
             left: x,
-            width: 1 * SCALE,
-            height: 1 * SCALE,
+            width: n * SCALE,
+            height: n * SCALE,
             style: {
                 fg: 'green',
                 bg: 'green',

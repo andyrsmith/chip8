@@ -11,7 +11,9 @@ if(!romFile) {
 //opcode are 16 bits but it is loaded into memory into 8 bits
 const fileContents = fs.readFileSync(romFile)
 console.log(fileContents)
-const cpu = new CPU()
+
+const cliGraphics = new CliGraphics()
+const cpu = new CPU(cliGraphics)
 const romBuffer = new RomBuffer(fileContents)
 
 cpu.load(romBuffer.getData())
