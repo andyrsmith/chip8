@@ -1,3 +1,4 @@
+//Todo: move a lot of this to another file
 const {CliGraphics } = require('./src/graphics')
 const { CPU } = require('./src/cpu')
 const { RomBuffer } = require('./src/romBuffer')
@@ -10,7 +11,6 @@ if(!romFile) {
 }
 //opcode are 16 bits but it is loaded into memory into 8 bits
 const fileContents = fs.readFileSync(romFile)
-console.log(fileContents)
 
 const cliGraphics = new CliGraphics()
 const cpu = new CPU(cliGraphics)
@@ -18,7 +18,25 @@ const romBuffer = new RomBuffer(fileContents)
 
 cpu.load(romBuffer.getData())
 
-cpu.fetch()
+//cliGraphics.drawPixel(45, 4, 3)
+//todo figure out graphics
+//cliGraphics.render()
+let testCycle = 10
+function step() {
+
+    //if(elapsed > fpsInterval) {
+    //}
+    //for(let i = 0; i < testCycle; i++) {
+    //Need a better game loop
+    //while(true) {
+
+        cpu.cycle()
+   // }
+   // cliGraphics.render()
+    setTimeout(step, 3)
+}
+
+step()
 //const emulator = new CliGraphics()
 
 //emulator.drawPixel(43,8)
