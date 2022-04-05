@@ -4,7 +4,7 @@ const SCALE = 1
 const blessed = require('blessed')
 
 class CliGraphics {
-    displayBuffer = [] 
+    displayBuffer = []
 
     constructor() {
         this.blessed = blessed
@@ -21,18 +21,28 @@ class CliGraphics {
     }
 
     drawPixel(x, y, value) {
+        this.displayBuffer[x*y] = value
+        //if(this.displayBuffer[x*y] === undefined) {
+
+        //console.log(value)
+        //}
+        //this.displayBuffer[x*y] = value
         //how to use fillRegion or should I use boxed
-        //this.screen.fillRegion('#00ff00', 'GREEN', x, x+5, y, y+5)
-        const collision = this.displayBuffer[x*y] & value
+        //if(this.displayBuffer[x*y]) {
 
+         //   this.screen.fillRegion('#00ff00', 'x', x, x+1, y, y+1)
+        //} else {
+        //    this.screen.clearRegion(x, x+1, y, y+1)
+        //}
+        //const collision = this.displayBuffer[x*y] & value
 
-        if(value) {
+        if(this.displayBuffer[x*y]) {
             this.blessed.box({
                 parent: this.screen,
                 top: y,
                 left: x,
                 width: 0.5,
-                height: 0.5,
+               height: 0.5,
                 style: {
                     fg: 'green',
                     bg: 'green',
@@ -49,7 +59,7 @@ class CliGraphics {
     }
 
     clearScreen() {
-        this.displayBuffer = this.createDisplayBuffer()
+        this.createDisplayBuffer()
         this.screen.clearRegion(0, COLS, 0, ROWS)
     }
 

@@ -21,9 +21,9 @@ cpu.load(romBuffer.getData())
 //cliGraphics.drawPixel(45, 4, 3)
 //todo figure out graphics
 //cliGraphics.render()
-let testCycle = 10
 function step() {
-
+    // run tick 60 times per second
+   setInterval(cpu.tick, 5)
     //if(elapsed > fpsInterval) {
     //}
     //for(let i = 0; i < testCycle; i++) {
@@ -36,7 +36,10 @@ function step() {
     setTimeout(step, 3)
 }
 
-step()
+//for(let i = 0; i < 50 ; i++) {
+
+    step()
+//}
 //const emulator = new CliGraphics()
 
 //emulator.drawPixel(43,8)
