@@ -3,8 +3,28 @@ const ROWS = 32
 const SCALE = 1
 const blessed = require('blessed')
 
+const KEYMAP = {
+    '1': 0x1,
+    '2': 0x2,
+    '3': 0x3,
+    '4': 0xC,
+    'q': 0x4,
+    'w': 0x5,
+    'e': 0x6,
+    'r': 0xD,
+    'a': 0x7,
+    's': 0x8,
+    'd': 0x9,
+    'f': 0xE,
+    'z': 0xA,
+    'x': 0x0,
+    'c': 0xB,
+    'v': 0xF
+}
+
 class CliGraphics {
     displayBuffer = []
+    key = null
 
     constructor() {
         this.blessed = blessed
@@ -15,9 +35,14 @@ class CliGraphics {
 
         this.screen.title = "Chip 8 Emulator"
 
-        this.screen.key(['escape', 'q', 'C-c'], function(ch, key) {
+        this.screen.key(['escape', 'C-c'], function(ch, key) {
           process.exit(0);
         });
+
+        this.screen.on('keypress', function(key) {
+            this.key = key
+        })
+
     }
 
     drawPixel(x, y, value) {
@@ -61,6 +86,12 @@ class CliGraphics {
     clearScreen() {
         this.createDisplayBuffer()
         this.screen.clearRegion(0, COLS, 0, ROWS)
+    }
+
+    getKeyValue() {
+        if(this.key) {
+            return this.KEYMAP[this.key]
+        }
     }
 
     render() {

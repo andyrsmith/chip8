@@ -87,9 +87,7 @@ class CPU {
         this.y = (this.opcode & 0x00f0) >> 4
         this.nn = (this.opcode & 0xff)
         this.nnn = (this.opcode & 0xfff)
-        if(this.debug) {
-            console.log(this.opcode.toString(16).padStart(4, '0'))
-        }
+        
         switch(this.opcode & 0xf000) {
             case 0x0000:
                 switch(this.opcode & 0x00ff) {
@@ -283,6 +281,7 @@ class CPU {
     }
 
     execute() {
+        let key
         // When should I increment and when should I not
         switch(this.instruction) {
             case 'CLS':
@@ -336,7 +335,11 @@ class CPU {
                 break
             case 'AVX':
                 //0x7XNN add value to register vx
-                this.registers[this.x] += this.nn
+                let v = this.registers[this.x] + this.nn
+                if(v > 255) {
+                    v -= 256
+                }
+                this.registers[this.x] = v
                 this.nextInstruction()
                 break
             case 'SET_VX_VY':
@@ -403,7 +406,6 @@ class CPU {
             case 'SHL_VX':
                 //8xyE Set Vx = Vx SHL 1
                 this.registers[0xf] = (this.registers[this.x] & 0xf0) >> 7
-                console.log(this.registers[0xf].toString(16))
                 this.registers[this.x] <<= 1
                 this.nextInstruction()
 
@@ -418,7 +420,6 @@ class CPU {
                 break
             case 'INX':
                 //0xANNN set register I
-                this.debug =false
                 this.I = this.nnn
                 this.nextInstruction()
                 break 
@@ -458,12 +459,22 @@ class CPU {
                 break
             case 'SKP_KEY_VX':
                 // EX9E Skip one instruction if key value in VX is pressed
+                key = this.graphics.getKeyValue()
+                if(this.registers[this.x] == key) {
+                    this.skipInstruction()
+                } else {
+                    this.nextInstruction()
+                }
                 // implement when keyboard is implemented
-                this.nextInstruction()
                 break
             case 'SKP_NOT_KEY_VX':
                 // EXA1 Skip instruction if key value VX is not pressed
-                this.nextInstruction()
+                key = this.graphics.getKeyValue()
+                if(this.registers[this.x] != key) {
+                    this.skipInstruction()
+                } else {
+                    this.nextInstruction()
+                }
                 break
  
             case 'SET_VX_DEL':
@@ -473,6 +484,8 @@ class CPU {
                 break
             case 'WAIT_KEY':
                 // FX0A Wait for key pressed, store the value of the key in VX
+                key = this.graphics.getKeyValue()
+                this.registers[this.x] = key
                 this.nextInstruction()
                 break
             case 'SET_DEL_VX':
@@ -482,6 +495,7 @@ class CPU {
                 break
             case 'SET_SOUND':
                 // FX18 Set sound timer = VX
+                this.nextInstruction()
                 break
             case 'SET_INX':
                 // FX1E Set I = I + VX
@@ -514,7 +528,6 @@ class CPU {
                     this.registers[i] = this.memory[this.I+i]
                 }
                 this.nextInstruction()
-
                 break
             case 'NOPE':
                 this.nextInstruction()

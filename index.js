@@ -21,9 +21,15 @@ cpu.load(romBuffer.getData())
 //cliGraphics.drawPixel(45, 4, 3)
 //todo figure out graphics
 //cliGraphics.render()
+let timer  = 0
 function step() {
+    timer++
+    if(timer % 5 ===0) {
+        cpu.tick()
+        timer = 0
+    }
     // run tick 60 times per second
-   setInterval(cpu.tick, 5)
+   //setInterval(cpu.tick, 5)
     //if(elapsed > fpsInterval) {
     //}
     //for(let i = 0; i < testCycle; i++) {
