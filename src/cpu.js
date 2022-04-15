@@ -331,7 +331,6 @@ class CPU {
                 //0x6XNN set register vx
                 this.registers[this.x] = this.nn
                 this.nextInstruction()
-                //next instruction
                 break
             case 'AVX':
                 //0x7XNN add value to register vx
@@ -364,7 +363,7 @@ class CPU {
                 break
             case 'ADD_VX_VY':
                 //8xy4 Set Vx = Vx + Vy, set VF = carry
-                let value = (this.registers[this.x] += this.registers[this.y])
+                let value = (this.registers[this.x] + this.registers[this.y])
                 if(value > 0xff) {
                     this.registers[0xf] = 1
                     this.registers[this.x] = value
@@ -405,7 +404,7 @@ class CPU {
                 break
             case 'SHL_VX':
                 //8xyE Set Vx = Vx SHL 1
-                this.registers[0xf] = (this.registers[this.x] & 0xf0) >> 7
+                this.registers[0xf] = this.registers[this.x]  >> 7
                 this.registers[this.x] <<= 1
                 this.nextInstruction()
 
@@ -429,7 +428,7 @@ class CPU {
                 break
             case 'RAN':
                 //0xCXKK Random number from 0 to 255 is generated the result is AND with KK and stored in Vx
-                let random = Math.floor(Math.random() * 255)
+                let random = Math.floor(Math.random() * 0xff)
                 this.registers[this.x] = random & this.nn
                 this.nextInstruction()
                 break
@@ -448,10 +447,13 @@ class CPU {
                 // If this causes any pixels to be erased, VF is set to 1
                         //if(value === 1) {
                         //    this.registers[0xf] = 1
-                        //}
+                        //
+                        //
                         let x = (this.registers[this.x] + position) % 64 // wrap around width
                         let y = (this.registers[this.y] + i) % 32 // wrap around height
-                        this.graphics.drawPixel(x, y, value)
+                        if(this.graphics.drawPixel(x,y,value)) {
+                            this.registers[0xf] = 1
+                        }
                     }
 
                 }
@@ -460,7 +462,7 @@ class CPU {
             case 'SKP_KEY_VX':
                 // EX9E Skip one instruction if key value in VX is pressed
                 key = this.graphics.getKeyValue()
-                if(this.registers[this.x] == key) {
+                if(key & (1 << this.registers[this.x])) {
                     this.skipInstruction()
                 } else {
                     this.nextInstruction()
@@ -470,7 +472,7 @@ class CPU {
             case 'SKP_NOT_KEY_VX':
                 // EXA1 Skip instruction if key value VX is not pressed
                 key = this.graphics.getKeyValue()
-                if(this.registers[this.x] != key) {
+                if(!(key & ( 1 << this.registers[this.x]))) {
                     this.skipInstruction()
                 } else {
                     this.nextInstruction()
@@ -484,7 +486,10 @@ class CPU {
                 break
             case 'WAIT_KEY':
                 // FX0A Wait for key pressed, store the value of the key in VX
-                key = this.graphics.getKeyValue()
+                key = this.graphics.waitKey()
+                if(!keyPressed) {
+                    return
+                }
                 this.registers[this.x] = key
                 this.nextInstruction()
                 break
@@ -511,8 +516,8 @@ class CPU {
             case 'BCD_VX':
                 // FX33 Store BCD representation of VX in memory lcation I, I+1, and I+2
                 this.memory[this.I] = parseInt(this.registers[this.x]/100)
-                this.memory[this.I+1] =  parseInt((this.registers[this.x] % 100) / 10)
-                this.memory[this.I+2] =  parseInt(this.registers[this.x] % 10)
+                this.memory[this.I+1] = parseInt((this.registers[this.x] % 100) / 10)
+                this.memory[this.I+2] = parseInt(this.registers[this.x] % 10)
                 this.nextInstruction()
                 break
             case 'STORE_REG':

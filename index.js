@@ -23,7 +23,9 @@ cpu.load(romBuffer.getData())
 //cliGraphics.render()
 let timer  = 0
 function step() {
+
     timer++
+    //One tick 60 times per second
     if(timer % 5 ===0) {
         cpu.tick()
         timer = 0
@@ -35,7 +37,7 @@ function step() {
     //for(let i = 0; i < testCycle; i++) {
     //Need a better game loop
     //while(true) {
-
+        // 700 instructions per second
         cpu.cycle()
    // }
    // cliGraphics.render()
