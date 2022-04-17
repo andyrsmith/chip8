@@ -444,11 +444,6 @@ class CPU {
                     let spriteData = this.memory[this.I + i]
                     for(let position = 0; position < 8; position++) {
                          let value = spriteData & (1 << (7 - position)) ? 1 : 0
-                // If this causes any pixels to be erased, VF is set to 1
-                        //if(value === 1) {
-                        //    this.registers[0xf] = 1
-                        //
-                        //
                         let x = (this.registers[this.x] + position) % 64 // wrap around width
                         let y = (this.registers[this.y] + i) % 32 // wrap around height
                         if(this.graphics.drawPixel(x,y,value)) {
@@ -462,7 +457,7 @@ class CPU {
             case 'SKP_KEY_VX':
                 // EX9E Skip one instruction if key value in VX is pressed
                 key = this.graphics.getKeyValue()
-                if(key & (1 << this.registers[this.x])) {
+                if(key === this.registers[this.x]) {
                     this.skipInstruction()
                 } else {
                     this.nextInstruction()
@@ -472,7 +467,7 @@ class CPU {
             case 'SKP_NOT_KEY_VX':
                 // EXA1 Skip instruction if key value VX is not pressed
                 key = this.graphics.getKeyValue()
-                if(!(key & ( 1 << this.registers[this.x]))) {
+                if(!(key === this.registers[this.x])) {
                     this.skipInstruction()
                 } else {
                     this.nextInstruction()
@@ -487,7 +482,7 @@ class CPU {
             case 'WAIT_KEY':
                 // FX0A Wait for key pressed, store the value of the key in VX
                 key = this.graphics.waitKey()
-                if(!keyPressed) {
+                if(!key) {
                     return
                 }
                 this.registers[this.x] = key
