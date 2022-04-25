@@ -58,6 +58,11 @@ class CPU {
         if(this.delayTimer > 0) {
             this.delayTimer--
         }
+
+        if(this.soundTimer > 0) {
+            this.graphics.playBeep()
+            this.soundTimer--
+        }
     }
 
     fetch() {
@@ -495,6 +500,7 @@ class CPU {
                 break
             case 'SET_SOUND':
                 // FX18 Set sound timer = VX
+                this.soundTimer = this.registers[this.x]
                 this.nextInstruction()
                 break
             case 'SET_INX':

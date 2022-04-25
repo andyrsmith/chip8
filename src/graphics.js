@@ -96,6 +96,10 @@ class CliGraphics {
     render() {
         this.screen.render()
     }
+
+    playBeep() {
+        //console.log("\x07")
+    }
 }
 
 module.exports = { CliGraphics }
