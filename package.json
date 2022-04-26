@@ -4,7 +4,7 @@
   "description": "Chip8 Emulator written in Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "play": "node index.js"
   },
   "author": "Andy Smith",
   "license": "ISC",
