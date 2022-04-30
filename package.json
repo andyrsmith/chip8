@@ -6,6 +6,9 @@
   "scripts": {
       "play": "node index.js"
   },
+  "bin":  {
+      "chip8term": "./index.js"
+  },
   "author": "Andy Smith",
   "license": "ISC",
   "dependencies": {
